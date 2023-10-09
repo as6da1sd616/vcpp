@@ -131,10 +131,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// 창 크기 변경을 제한하기 위한 메시지 핸들링
 		if (1) {
 			MINMAXINFO* pInfo = (MINMAXINFO*)lParam;
-			pInfo->ptMinTrackSize.x = 400; // 최소 폭
-			pInfo->ptMinTrackSize.y = 400; // 최소 높이
-			pInfo->ptMaxTrackSize.x = 400; // 최대 폭
-			pInfo->ptMaxTrackSize.y = 400; // 최대 높이
+			pInfo->ptMinTrackSize.x = 800; // 최소 폭
+			pInfo->ptMinTrackSize.y = 600; // 최소 높이
+			pInfo->ptMaxTrackSize.x = 800; // 최대 폭
+			pInfo->ptMaxTrackSize.y = 600; // 최대 높이
 			break;
 		}
 	case WM_DESTROY:
@@ -172,18 +172,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	// Window viewport 영역 조정
-	RECT rect = { 0, 0, 800, 600 };
+	RECT rect = { 150, 100, 800, 600 };
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, 0);
 	int width = rect.right - rect.left;
 	int height = rect.bottom - rect.top;
+
+
+	// Window viewport 영역 조정
 	
 	// 윈도우 생성
 	HWND hwnd = CreateWindow(
 		wc.lpszClassName,
 		TEXT("201907046 김승원"),
-		WS_OVERLAPPEDWINDOW|WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		0, 0,
-		width, height,
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+		0, 0, 800, 600,
 		NULL, NULL,
 		hInstance,
 		NULL
