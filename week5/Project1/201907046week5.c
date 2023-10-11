@@ -15,7 +15,7 @@ HBRUSH pinkBrush, whiteBrush; // 분홍색 브러시 핸들
 // 이동을 위한 변수
 int offsetX, offsetY;
 // 이전 사각형의 좌표를 저장하는 변수
-int prevStartX, prevStartY, prevEndX, prevEndY;
+int prevStartX, prevStartY, prevEndX, prevEndY, pStartX, pStartY, pEndX, pEndY;
 // 초기화 함수
 void Initialize() {
 	isDrawing = FALSE;
@@ -24,6 +24,8 @@ void Initialize() {
 	offsetY = 0;
 	prevStartX = 0;
 	prevStartY = 0;
+	pStartX = 0;
+	pStartY = 0;
 	prevEndX = 0;
 	prevEndY = 0;
 }
@@ -31,8 +33,15 @@ void Initialize() {
 // 윈도우의 이벤트를 처리하는 콜백(Callback) 함수.
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	
-	
+	RECT rc2;
+	POINT lt, rb;
+	GetClientRect(hwnd, &rc2);
+	lt.x = rc2.left; lt.y = rc2.top; rb.x = rc2.right; rb.y = rc2.bottom;
+	ClientToScreen(hwnd, &lt); ClientToScreen(hwnd, &rb);
+	rc2.left = lt.x + 1; rc2.top = lt.y - 100; rc2.right = rb.x + 1; rc2.bottom = rb.y + 1;
+	ClipCursor(&rc2);
+
+
 	switch (uMsg) {
 	case WM_CREATE:
 		// 분홍색 브러시 생성
@@ -90,17 +99,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			int currentY = HIWORD(lParam);
 
 			HDC hdc = GetDC(hwnd);
-			SetROP2(hdc, R2_COPYPEN);
-			Rectangle(hdc, startPos.x, startPos.y, currentX, currentY);
-			
+			SelectObject(hdc, whiteBrush); // 
+			SetROP2(hdc, R2_WHITE);
+			Rectangle(hdc, startPos.x, startPos.y, pStartX, pStartY);
 
-			SetROP2(hdc, R2_NOTXORPEN);
-			SelectObject(hdc, pinkBrush); 
+			SetROP2(hdc, R2_COPYPEN);
+			SelectObject(hdc, pinkBrush); // 분홍색 브러시 선택
 			Rectangle(hdc, startPos.x, startPos.y, currentX, currentY);
 
 			ReleaseDC(hwnd, hdc);
+
+			pStartX = currentX;
+			pStartY = currentY;
 		}
-		else if (isMoving&&(wParam&MK_RBUTTON)) {
+		else if (isMoving && (wParam & MK_RBUTTON)) {
 			int newX = LOWORD(lParam) - offsetX;
 			int newY = HIWORD(lParam) - offsetY;
 			int width = prevEndX - prevStartX;
@@ -178,8 +190,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int height = rect.bottom - rect.top;
 
 
+
 	// Window viewport 영역 조정
-	
+
 	// 윈도우 생성
 	HWND hwnd = CreateWindow(
 		wc.lpszClassName,
