@@ -61,6 +61,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			offsetX = LOWORD(lParam) - prevStartX;
 			offsetY = HIWORD(lParam) - prevStartY;
 		}
+		if (LOWORD(lParam) <= prevStartX && LOWORD(lParam) >= prevEndX && //아래로 내렸다 반대방향 그릴때 조건반대로 
+			HIWORD(lParam) <= prevStartY && HIWORD(lParam) >= prevEndY) {
+			isMoving = TRUE;
+			offsetX = LOWORD(lParam) - prevStartX;
+			offsetY = HIWORD(lParam) - prevStartY;
+		}
+
 		break;
 	case WM_RBUTTONUP:
 		// 마우스 오른쪽 버튼 뗄 때, 이동 모드 해제
