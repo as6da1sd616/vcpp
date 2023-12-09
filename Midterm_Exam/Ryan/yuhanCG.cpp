@@ -1,4 +1,116 @@
 #include "yuhanCG.h"
+
+void DrawBox(HWND hWnd, HDC hdc, WPARAM wParam, LPARAM lParam, int left, int top, int right, int bottom, bool boxMove, int newX, int newY, int width, int height, int prevStartX, int prevStartY, int  prevEndX, int prevEndY) {
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int x = left;
+    int y = top;
+    int ex = right;
+    int ey = bottom;
+    int a, b, c, d;
+    if ((x != 0) && (!boxMove)) {
+        Rectangle(hdc, x, y, ex, ey);
+        prevStartX = x;
+        prevStartY = y;
+        prevEndX = ex;
+        prevEndY = ey;
+    }
+    if (boxMove) {
+
+        Rectangle(hdc, prevStartX, prevStartY, prevEndX, prevEndY);
+
+    }
+
+
+
+
+
+
+
+}
+
+
+void DrawCircle(HWND hWnd, HDC hdc, int left, int top, int right, int bottom, double  cre, bool crein) {
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    int x = left;
+    int y = top;
+    int ex = right;
+    int ey = bottom;
+    bool bre = false;
+    int a, b, c, d;
+
+
+    int resultx = (ex - x) / 2 * cre; // x길이 
+    int resulty = (ey - y) / 2 * cre; // y길이
+    if (crein) {
+        if (!bre)
+            a = x + resultx;
+        b = y + resulty;
+        c = ex - resultx;
+        d = ey - resulty;
+        if (a > c) {
+            bre = true;
+            a = x;
+            b = y;
+            c = x;
+            d = y;
+        }
+    }
+    else {
+        a = x - resultx;
+        b = y - resulty;
+        c = ex + resultx;
+        d = ey + resulty;
+    }
+    if (x != 0 && x <= 24) {  //드로잉영역 쳐나가기 방지
+        x = 24;
+    }
+    if (y != 0 && y <= 104) {
+        y = 104;
+    }
+    if (ex >= 768) {
+        ex = 768;
+    }
+    if (ey >= 440) {
+        ey = 440;
+    }
+    if (ey <= 104) {
+        ey= 104;
+    }
+    if (a != 0 && a <= 24) {  //드로잉영역 쳐나가기 방지
+        a = 24;
+    }
+    if (b != 0 && b <= 104) {
+        b = 104;
+    }
+    if (c >= 768) {
+        c = 768;
+    }
+    if (d >= 450) {
+        d = 450;
+    }
+    if (d <= 104) {
+        d = 104;
+    }
+    if (cre == 0) {
+        Ellipse(hdc, x, y, ex, ey);
+    }
+    else {//확대
+        Ellipse(hdc, a, b, c, d);
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
  void DrawBonobono(HWND hWnd, HDC hdc, int blink) {
     RECT rect;
     GetClientRect(hWnd, &rect);
@@ -116,8 +228,11 @@ void DrawRyan(HWND hWnd, HDC hdc, int left, int top, int right, int bottom) {
         if (ex >= 768) {
             ex = 768;
         }
-        if (ey >= 440) {
-            ey = 440;
+        if (ey >= 450) {
+            ey = 450;
+        }
+        if (ey <= 104) {
+            ey = 104;
         }
 
 
